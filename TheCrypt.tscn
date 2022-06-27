@@ -27,14 +27,6 @@ wrap_enabled = true
 margin_left = 555.0
 margin_top = 180.0
 margin_right = 1024.0
-margin_bottom = 453.0
-readonly = true
-wrap_enabled = true
-
-[node name="Signature" type="TextEdit" parent="."]
-margin_left = 555.0
-margin_top = 456.0
-margin_right = 1024.0
 margin_bottom = 597.0
 readonly = true
 wrap_enabled = true
@@ -45,10 +37,3 @@ margin_top = 134.324
 margin_right = 703.46
 margin_bottom = 174.324
 text = "Encrypt"
-
-[node name="Timestamp" type="LineEdit" parent="."]
-margin_left = 769.0
-margin_top = 135.0
-margin_right = 961.0
-margin_bottom = 172.0
-editable = false

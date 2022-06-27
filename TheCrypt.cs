@@ -8,8 +8,6 @@ public class TheCrypt : Node2D
     private TextEdit _rsaPrivate;
     private TextEdit _input;
     private TextEdit _output;
-    private TextEdit _signature;
-    private LineEdit _timestamp;
     private Button _encryptButton;
 
     private Crypto _crypto = new Crypto();
@@ -21,8 +19,6 @@ public class TheCrypt : Node2D
         _rsaPrivate = GetNode<TextEdit>("RsaPrivateKey");
         _input = GetNode<TextEdit>("Input");
         _output = GetNode<TextEdit>("Output");
-        _signature = GetNode<TextEdit>("Signature");
-        _timestamp = GetNode<LineEdit>("Timestamp");
         _encryptButton = GetNode<Button>("EncryptButton");
 
         _MPKey.Load("res://mp_private.pem", false);
@@ -34,11 +30,10 @@ public class TheCrypt : Node2D
 
     private void _OnEncryptButtonPressed()
     {
-        _timestamp.Text = OS.GetSystemTimeSecs().ToString();
+        var timestamp = OS.GetSystemTimeSecs();
         var secretPayload = new ApiPayloadSecurity().EncryptPayload(_input.Text);
 
-        var message = $"{secretPayload}.{_timestamp.Text}";
-        _output.Text = message;
+        var message = $"{secretPayload}.{timestamp.ToString()}";
 
         // Hashing & signing:
         var sha256 = new HashingContext();
@@ -47,6 +42,14 @@ public class TheCrypt : Node2D
         var hash = sha256.Finish();
 
         var signature = _crypto.Sign(HashingContext.HashType.Sha256, hash, _MPKey);
-        _signature.Text = Marshalls.RawToBase64(signature);
+        var signatureText = Marshalls.RawToBase64(signature);
+
+        var output = new Godot.Collections.Dictionary() {
+            ["Payload"] = secretPayload,
+            ["Timestamp"] = timestamp,
+            ["Signature"] = signatureText
+        };
+
+        _output.Text = JSON.Print(output, "\t");
     }
 }
